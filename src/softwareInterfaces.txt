@@ -1,0 +1,64 @@
+!theme cyborg
+class Kamera {
+    + captureImage(): Bild
+}
+
+class Wägezelle {
+    + getWeight(): float
+}
+
+class HX711 {
+    + convertToDigital(): int
+}
+
+class ArduinoMega {
+    + processImage(image: Bild): Ergebnis
+    + calculateResult(weight: float, digitalValue: int): Ergebnis
+    + generateQRCode(data: String): QRCode
+}
+
+class TensorFlowModell {
+    + predict(image: Bild): Ergebnis
+}
+
+class Plausibilitätsberechnung {
+    + checkPlausibility(result: Ergebnis): boolean
+}
+
+class Ergebnis {
+    - image: Bild
+    - weight: float
+    - digitalValue: int
+    - prediction: String
+}
+
+class PKI {
+    + signData(data: String): Signature
+}
+
+class QRCodeGenerator {
+    + generateQRCode(data: String): QRCode
+}
+
+class LEDMatrix {
+    + displayResult(result: Ergebnis): void
+}
+
+class Display {
+    + showQRCode(qrCode: QRCode): void
+}
+
+class Bild
+class Signature
+class QRCode
+
+Kamera -- ArduinoMega
+Wägezelle -- HX711
+HX711 -- ArduinoMega
+TensorFlowModell -- ArduinoMega
+Plausibilitätsberechnung -- ArduinoMega
+Ergebnis -- ArduinoMega
+PKI -- ArduinoMega
+QRCodeGenerator -- ArduinoMega
+LEDMatrix -- ArduinoMega
+Display -- ArduinoMega

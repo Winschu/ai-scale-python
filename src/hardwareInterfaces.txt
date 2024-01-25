@@ -1,0 +1,35 @@
+@startuml
+!theme cyborg
+package "Kamera" {
+    [Arducam Mega]
+}
+
+package "Waage" {
+    [Gewichtsmesseinheit]
+}
+
+package "Arduino" {
+    [LED-Matrix]
+    [Web-Server]
+    [QR-Code-Generator]
+}
+
+package "Client" {
+    [TensorFlow-Modell]
+    [Plausibilitätsberechnung]
+    [Ergebnisberechnung]
+    [PKI]
+}
+
+[Arducam Mega] --> Arduino
+Arduino --> [TensorFlow-Modell]
+[TensorFlow-Modell] --> [Plausibilitätsberechnung]
+[Waage] --> Client
+
+[Plausibilitätsberechnung] --> [Ergebnisberechnung]
+[Ergebnisberechnung] <-> [PKI]
+[Ergebnisberechnung] --> [QR-Code-Generator]
+[Ergebnisberechnung] --> [LED-Matrix]
+[QR-Code-Generator] --> Display
+
+@enduml
