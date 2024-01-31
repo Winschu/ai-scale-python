@@ -1,0 +1,26 @@
+@startuml
+participant Arduino
+participant PC
+
+== Verbindung und Daten senden ==
+Arduino -> PC: Verbindung herstellen
+note over Arduino, PC: 1. Verbindung herstellen (Setup)
+
+loop für jedes Bild
+    Arduino -> PC: Bild senden
+end
+Arduino -> PC: Gewicht senden
+note over Arduino, PC: 2. Daten senden
+
+== Daten empfangen und prüfen ==
+PC -> PC: Bilder und Gewicht empfangen
+note over PC: 3. Daten empfangen
+PC -> PC: Bilderkennung und Gewichtsprüfung
+PC --> Arduino: Ergebnis an Arduino zurücksenden
+note over Arduino: 4. Ergebnis prüfen
+
+== Verbindung beenden ==
+Arduino -> PC: Verbindung beenden
+note over Arduino, PC: 5. Verbindung beenden
+
+@enduml
