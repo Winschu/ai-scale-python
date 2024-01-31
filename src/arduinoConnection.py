@@ -1,17 +1,33 @@
 import socket
 
-host = '192.168.1.177'  # IP-Adresse des Arduino
-port = 80  # Der Port, den der Arduino verwendet
+# IP-Adresse und Port des Arduino
+arduino_ip = '192.168.1.2'  # Beispiel-IP-Adresse, anpassen
+arduino_port = 12345  # Beispiel-Port, anpassen
 
 # Socket erstellen
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Verbindung zum Arduino herstellen
-client_socket.connect((host, port))
+server_socket.connect((arduino_ip, arduino_port))
 
-# Daten senden
-message = "Hallo Arduino! Dies ist eine Testnachricht."
-client_socket.sendall(message.encode())
+while True:
+    # Nachricht vom Arduino empfangen
+    message_from_arduino = server_socket.recv(1024)
+
+    # Wenn keine Nachricht mehr empfangen wird, die Schleife beenden
+    if not message_from_arduino:
+        break
+
+    print("Nachricht vom Arduino:", message_from_arduino.decode())
+
+    # Hier können Sie je nach Nachricht Aktionen durchführen
+    if message_from_arduino.decode() == "LED einschalten":
+        print("Aktion: LED einschalten")
+        # Führen Sie hier den Code für das Einschalten der LED aus
+
+    elif message_from_arduino.decode() == "LED ausschalten":
+        print("Aktion: LED ausschalten")
+        # Führen Sie hier den Code für das Ausschalten der LED aus
 
 # Socket schließen
-client_socket.close()
+server_socket.close()
