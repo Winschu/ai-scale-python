@@ -8,10 +8,9 @@ label_file = 'labels.txt'
 train_dir = './data/Training'
 saved_files = './output_files'
 
-if not os.path.exists(saved_files):
-    os.makedirs(saved_files)
+with open(label_file, "r") as f:
+    labels = [x.strip() for x in f.readlines()]
 
-    labels = os.listdir(train_dir)
 
 def test_model(path: str):
     # Load the model once, outside your function
