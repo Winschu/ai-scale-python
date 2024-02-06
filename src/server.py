@@ -1,3 +1,5 @@
+from testModel import test_model
+
 from flask import Flask, request
 import base64
 import os
@@ -50,6 +52,8 @@ def upload_image():
                 print(f"File created, size: {file_size} bytes")
             else:
                 print("File size is 0, image data might not have been written correctly")
+
+            test_model('received_image.jpg')
 
             return {'status': 'success'}
         else:
