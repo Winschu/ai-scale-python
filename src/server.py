@@ -8,7 +8,6 @@ import re
 from cheroot.wsgi import Server as WSGIServer
 
 import logging
-import cherrypy
 
 from werkzeug.exceptions import RequestEntityTooLarge
 
@@ -23,16 +22,6 @@ print(app.config['MAX_CONTENT_LENGTH'])
 def handle_file_size_too_large(e):
     difference = request.content_length - app.config['MAX_CONTENT_LENGTH']
     return f"Die Datei ist zu groß. Sie überschreitet das Limit um {difference} Bytes.", 413
-
-api = Api(app)
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-file_handler = logging.FileHandler('flask.log')
-app.logger.addHandler(file_handler)
-cherrypy.log.error_log.setLevel(logging.INFO)
-
 
 def replace_spaces_with_plus(base64_string):
     return base64_string.replace(' ', '+')
@@ -68,6 +57,9 @@ class UploadImage(Resource):
             file_size = os.path.getsize('received_image.jpg')
             if file_size > 0:
                 print(f"File created, size: {file_size} bytes")
+
+
+
             else:
                 print("File size is 0, image data might not have been written correctly")
 

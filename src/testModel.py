@@ -4,21 +4,13 @@ import numpy as np
 
 import tensorflow as tf
 
-use_label_file = False  # set this to true if you want load the label names from a file; uses the label_file defined below; the file should contain the names of the used labels, each label on a separate line
 label_file = 'labels.txt'
 base_dir = '../../../..'  # relative path to the Fruit-Images-Dataset folder
 train_dir = os.path.join(base_dir, 'Training')
 test_dir = os.path.join(base_dir, 'Test')
-saved_files = os.getcwd() + '/output_files'  # root folder in which to save the the output files; the files will be under output_files/model_name
+saved_files = './output_files'
 
-if not os.path.exists(saved_files):
-    os.makedirs(saved_files)
-
-if use_label_file:
-    with open(label_file, "r") as f:
-        labels = [x.strip() for x in f.readlines()]
-else:
-    labels = os.listdir(train_dir)
+labels = os.listdir(train_dir)
 
 # Load the model once, outside your function
 name = 'fruit-360-model-gpu-30ep-100ba-reduced-labels'
