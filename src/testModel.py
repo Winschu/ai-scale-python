@@ -12,17 +12,20 @@ with open(label_file, "r") as f:
     labels = [x.strip() for x in f.readlines()]
 
 
-def test_model(path: str):
+def test_model(image_path: str):
     # Load the model once, outside your function
-    name = 'model'
-    model_out_dir = os.path.join(saved_files, name)
-    if not os.path.exists(model_out_dir):
-        print("No saved model found in: " + model_out_dir)
+    model_out_dir = os.path.abspath(os.path.join(saved_files, 'model'))
+
+    if not os.path.isdir(model_out_dir):
+        print("No saved model directory found in: " + model_out_dir)
         exit(0)
+    else:
+        print("Model directory: " + model_out_dir)
+
     model = tf.keras.models.load_model(os.path.join(model_out_dir, "model.tf"))
 
     print("Testing model...")
-    image = Image.open(path).resize((100, 100))
+    image = Image.open(image_path).resize((100, 100))
     data = np.array([np.asarray(image)], dtype=int)
     y_pred = model.predict(data, 1)
     print("Prediction probabilities: " + str(y_pred))
