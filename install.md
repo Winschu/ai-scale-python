@@ -8,6 +8,10 @@ Create new Environment which uses python 3.9
 conda create -n tensorflow_39_env python=3.9 tensorflow
 ```
 
+Maybe do
+
+conda init
+
 Enable it as an environment
 
 ```bash
