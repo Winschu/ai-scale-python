@@ -48,7 +48,6 @@ def test_model():
 
     if image:
         print("Image is loaded successfully.")
-        image.show()  # This line will display the image
 
         # Try converting the image to numpy array
         try:
