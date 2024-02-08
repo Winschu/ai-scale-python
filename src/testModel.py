@@ -4,9 +4,9 @@ import numpy as np
 
 import tensorflow as tf
 
-label_file = 'labels.txt'
+label_file = './src/labels.txt'
 train_dir = './data/Training'
-saved_files = './output_files'
+saved_files = './src/output_files'
 
 with open(label_file, "r") as f:
     labels = [x.strip() for x in f.readlines()]
