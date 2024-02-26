@@ -33,6 +33,7 @@ pip install tensorflow-model-optimization
 ```bash
 conda install -c conda-forge cudatoolkit
 conda install cudnn
+pip install tensorflow-addons
 ```
 
 If you've installed tensorflow from cuda, de-install it and make sure to get the latest version from pip
