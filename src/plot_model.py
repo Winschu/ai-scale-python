@@ -12,7 +12,7 @@ def plot_model_history_from_file(file_path):
         history[key] = eval(value)
 
     # Erstellen Sie den Plot für Genauigkeit und Verlust
-    plt.plot(history['accuracy'], label='accuracy')mode
+    plt.plot(history['accuracy'], label='accuracy')
     plt.plot(history['val_accuracy'], label='val_accuracy')
     plt.title('Model Accuracy')
     plt.xlabel('Epoch')
