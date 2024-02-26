@@ -7,11 +7,12 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from src.image_processing import upload_image, handle_file_size_too_large, home
 
 os.environ['SERVER_PORT'] = '8083'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 app = Flask(__name__)
 
-#app.config["ENV"] = 'development'
-#app.config["TESTING"] = True
+app.config["ENV"] = 'development'
+app.config["TESTING"] = True
 app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024 * 1024
 
 app.register_error_handler(RequestEntityTooLarge, handle_file_size_too_large)
