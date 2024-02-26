@@ -1,46 +1,39 @@
 import os
 import unittest
-from unittest.mock import patch, MagicMock
-import numpy as np
-from PIL import Image
-import tensorflow as tf
+from unittest.mock import patch
+
+import tensorflow
+import logging
+
+from testModel import detect_fruit, load_model
 
 
-class TestModelTest(unittest.TestCase):
+class TestModel(unittest.TestCase):
     @patch('tensorflow.keras.models.load_model')
-    @patch('os.path.exists')
-    @patch('os.path.join')
-    @patch('PIL.Image.Image.resize')
-    @patch('PIL.Image.open')
-    def test_test_model(self, mock_open, mock_resize, mock_join, mock_exists, mock_load_model):
+    def setUp(self, mock_load_model):
+        self.img_file_path = './src/pixelApple.jpg'
+        self.model = None
+        if os.path.exists(self.img_file_path):
+            self.model = tensorflow.keras.models.load_model(
+                os.path.join(os.path.abspath(os.path.join('output_files', 'model')), "model.tf"))
 
-        current_dir = os.path.dirname(os.path.abspath(__file__))  # get current directory
-        image_path = os.path.join(current_dir, 'test_image.jpg')  # append file name
+    def test_detect_fruit(self):
+        logger = logging.getLogger(__name__)
 
-        mock_exists.return_value = True
+        if self.model is not None:
+            logger.warning("\nUsing the actual model for testing...")
+            probabilities, class_index, class_label = detect_fruit(self.img_file_path)
 
-        mock_model = MagicMock()
-        mock_model.predict.return_value = np.array([[0.1, 0.9]])
-        mock_load_model.return_value = mock_model
+            logger.warning(f"Probabilities: {probabilities}")
+            logger.warning(f"class_index: {class_index}")
+            logger.warning(f"class_label: {class_label}")
 
-        mock_image = MagicMock(spec=Image.Image)
-        mock_open.return_value = mock_image
-        mock_image.resize.return_value = mock_image
+    @patch('tensorflow.keras.models.load_model')
+    def test_load_model(self, mock_load_model):
+        with patch('src.testModel.os.path.isdir') as mock_is_dir:
+            mock_is_dir.return_value = True
+            load_model()
+        mock_load_model.assert_called_once()
 
-        mock_join.return_value = './output_files/model/model.tf'
-
-        # You may need to adjust the labels accordingly
-        labels = ["label_0", "label_1"]
-
-        # Act
-        from testModel import test_model  # assuming that your function resides in test_script.py
-        test_model(image_path)
-
-        # Assert
-        mock_open.assert_called_once_with(image_path)
-        mock_image.resize.assert_called_once_with((100, 100))
-        mock_model.predict.assert_called_once()
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
