@@ -4,32 +4,43 @@ import os
 import re
 import logging
 
-from src.testModel import test_model
+from src.testModel import detect_fruit
+
 
 def handle_file_size_too_large(e):
     difference = request.content_length - request.max_content_length
     return f"Die Datei ist zu groß. Sie überschreitet das Limit um {difference} Bytes.", 413
 
+
 def replace_spaces_with_plus(base64_string: str):
     return base64_string.replace(' ', '+')
 
+
 def upload_image():
+    logger = logging.getLogger(__name__)
+
     # Receive the base64 encoded image
-    image_data = request.form.get('image_data')
+    raw_image_data = request.form.get('image_data')
     weight = request.form.get('weight')
 
-    if image_data is not None:
+    weight = 100
+
+    logger.warning(f"Raw Image Data Length: {len(raw_image_data)}")
+
+    if raw_image_data is not None:
         print("Got image data")
 
         # fixes transmission hiccup that happens
-        data_url = replace_spaces_with_plus(image_data)
+        data_url = replace_spaces_with_plus(raw_image_data)
 
-        # Extract the base64 string
+        print(data_url)
         image_data = data_url.split(',', 1)[-1]
+
+        logger.warning(f"Data Length: {len(image_data)}")
 
         # Check if the string is valid base64
         if is_valid_base64(image_data):
-            print("Base64 is valid")
+            print("Base64 is valid!")
             # If valid base64, proceed with decoding
             binary_data = base64.b64decode(image_data)
 
@@ -43,24 +54,59 @@ def upload_image():
             else:
                 print("File size is 0, image data might not have been written correctly")
 
-            test_model('received_image.jpg')
+            probabilities, class_index, class_label = detect_fruit('received_image.jpg')
 
-            return {'status': 'success'}
+            appel_min = 80
+            appel_max = 300
+            appel_range = range(appel_min, appel_max + 1)
+
+            orange_min = 100
+            orange_max = 500
+            orange_range = range(orange_min, orange_max + 1)
+
+            plum_min = 10
+            plum_max = 50
+            plum_range = range(plum_min, plum_max + 1)
+
+            # Beispielbedingung für die Klassifizierung von Früchten basierend auf Gewicht und Klassenbezeichnung
+            if class_label in ["Apple Braeburn", "Orange", "Plum"]:
+                if (class_label == "Apple Braeburn" and weight in appel_range) or \
+                        (class_label == "Orange" and weight in orange_range) or \
+                        (class_label == "Plum" and weight in plum_range):
+                    # Include the weight and prediction results in the response
+                    return {
+                        'status': 'success',
+                        'weight': weight,
+                        'prediction': {
+                            'probabilities': probabilities,
+                            'class_index': class_index,
+                            'class_label': class_label
+                        }
+                    }
+                else:
+                    logger.error("Detected fruit didn't fit into the weight range")
+            else:
+                logger.error("Unknown fruit recognized!")
+
         else:
             print("Invalid base64 data")
+            print(data_url)
             return {'status': 'error', 'message': 'Invalid base64 string'}
+
     else:
         print("image_data is none")
         return {'status': 'error', 'message': 'Invalid image_data send'}
 
+
 def home():
     abort(405)
+
 
 def is_valid_base64(string):
     logger = logging.getLogger(__name__)
 
     if len(string) % 4 != 0:  # base64 length should be a multiple of 4
-        logger.error("Invalid base64 string: Length is not a multiple of 4.")
+        logger.error(f"Invalid base64 string: Length ({len(string)}) is not a multiple of 4.")
         return False
 
     if re.match('^[A-Za-z0-9+/=]+\Z', string) is None:  # check for invalid characters
